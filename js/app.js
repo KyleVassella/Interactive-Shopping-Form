@@ -1,8 +1,3 @@
-//IMPROVEMENTS:
-//	ADD RED BORDER TO 'PAYMENT METHOD' SELECT menu
-// FIX BROKEN EVENT LISTENER ON otherInput
-
-
 var nameInput = document.getElementById('name');	// gets the 'Name' input
 var emailInput = document.getElementById('mail');
 var jobSelect = document.getElementById('title');
@@ -28,14 +23,10 @@ nameInput.focus();	// gives the 'Name' input focus
 otherInput.style.display = 'none';	//	hides the 'other input'
 otherInput.addEventListener("focus", function() {
 	otherInput.style.color = '';
-	});
-otherInput.addEventListener = ("focus", function() {	// WHY IS THIS EVENT LISTENER BEING TRIGGERED NO MATTER WHAT LISTENER, KEYDOWN IS TRIGGERED EVEN IF KEY IS NEVER PRESSED
-	otherInput.setAttribute('value', '');
+	otherInput.value = '';
 	});
 
-
-
-	//	after form submission, these event listeners clear the red highlights from incorrectly filled fields once the user types into them
+//	after form submission, these event listeners clear the red highlights from incorrectly filled fields once the user types into them
 nameInput.addEventListener('keyup', function() {
 	nameInput.style = '';
 });
@@ -44,11 +35,16 @@ emailInput.addEventListener('keyup', function() {
 	emailInput.style = '';
 });
 
-
-
+function activitiesReset() {
+	activitiesLegend.style = '';
+}	
 for (var i=0; i<checkboxes.length; i++) {
-checkboxes[i].addEventListener("change", function() {activitiesLegend.style = ''});
+checkboxes[i].addEventListener('change', activitiesReset);
 }
+
+paymentSelect.addEventListener('change', function() {
+		paymentLabel.style = '';
+});
 
 creditInput.addEventListener('keyup', function() {
 	creditInput.style = '';
@@ -61,6 +57,8 @@ zipInput.addEventListener('keyup', function() {
 cvvInput.addEventListener('keyup', function() {
 	cvvInput.style = '';
 });
+
+
 
 
 
@@ -110,10 +108,6 @@ designSelect.onchange = function() {
 
 
 
-
-
-
-
 function checkFrameworks() {
 	if (checkboxes[1].checked) {
 		checkboxes[3].disabled = true;
@@ -150,8 +144,7 @@ function checkNode() {
 
 var totalLabel = document.createElement('label'); //create a total label and dynamically append it
 var cost;
-for (var i=0; i<checkboxes.length; i++) {	//	HOW TO DO THIS DRY?
-	checkboxes[i].onchange = function() {
+function activitiesTotalAdd() {
 		cost = parseInt('0');	//	reset the total cost after each checkbox has been checked or unchecked to allow for a clean re-count. 
 		if (checkboxes[0].checked) {
 			cost += parseInt(checkboxes[0].value);
@@ -177,6 +170,8 @@ for (var i=0; i<checkboxes.length; i++) {	//	HOW TO DO THIS DRY?
 		activitiesSection.appendChild(totalLabel);
 		totalLabel.innerHTML = '<label>Total: $' + cost + ' </label>';
 	};
+for (var i=0; i<checkboxes.length; i++) {	//	HOW TO DO THIS DRY?
+	checkboxes[i].onchange = activitiesTotalAdd;
 }
 
 
@@ -223,7 +218,7 @@ function validateForm() {	// this function runs whenever the Submit button is pr
 	if (nameInput.value === null || nameInput.value === '') {
 		nameInput.style.backgroundColor = 'red';
 		nameInput.style.opacity = '.4';
-		alertArray.push('You must enter a name in the "Name" field.');
+		alertArray.push("Please enter a name in the 'Name' field.");
 		counter ++;
 	}
 
@@ -238,7 +233,7 @@ function validateForm() {	// this function runs whenever the Submit button is pr
 		counter++;
 	}
 
-	function validateEmail(email) { //USE TREEHOUSE FORMULA INSTEAD???? http://emailregex.com/
+	function validateEmail(email) {
 	    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	    return re.test(email);
 	}
@@ -256,7 +251,7 @@ function validateForm() {	// this function runs whenever the Submit button is pr
     if (okay) {
 	} else {
 	activitiesLegend.style.border = '3px solid rgba(255, 0, 0, .5)';
-    alertArray.push('Please check a checkbox');
+    alertArray.push('Please choose at least one activity.');
     counter++;
 	}
 
