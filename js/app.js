@@ -169,30 +169,15 @@ var totalLabel = document.createElement('label'); //create a total label
 var cost;	// cost variable to hold the everchanging price of chosen events
 function activitiesTotalAdd() {	//	function to add the $ value of each activity as it's checked
 	cost = parseInt('0');	//	reset the total cost after each checkbox has been checked or unchecked to allow for a clean re-count
-	if (checkboxes[0].checked) {
-		cost += parseInt(checkboxes[0].value);
-	}
-	if (checkboxes[1].checked) {
-		cost += parseInt(checkboxes[1].value);
-	}
-	if (checkboxes[2].checked) {
-		cost += parseInt(checkboxes[2].value);
-	}
-	if (checkboxes[3].checked) {
-		cost += parseInt(checkboxes[3].value);
-	}
-	if (checkboxes[4].checked) {
-		cost += parseInt(checkboxes[4].value);
-	}
-	if (checkboxes[5].checked) {
-		cost += parseInt(checkboxes[5].value);
-	}
-	if (checkboxes[6].checked) {
-		cost += parseInt(checkboxes[6].value);
+	for (var i=0; i<checkboxes.length; i++) {
+		if (checkboxes[i].checked) {
+			cost += parseInt(checkboxes[i].value);	
 	}
 	activitiesSection.appendChild(totalLabel);
 	totalLabel.innerHTML = '<label>Total: $' + cost + ' </label>';	//	dynamically appends the total cost label
+	}
 }
+	
 for (var i=0; i<checkboxes.length; i++) {	//	dynamically calculates the total cost as you check and uncheck activities checkboxes
 	checkboxes[i].onchange = activitiesTotalAdd;
 }
