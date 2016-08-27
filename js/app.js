@@ -279,7 +279,7 @@ function validateForm() {	// this function runs whenever the Submit button is pr
 	var cardNumber = document.getElementById('cc-num').value;
 	function valid_credit_card(cardNumber) {
 	  // accept only digits, dashes or spaces, must be at least 15 characters long. Has no max length specification because user might include spaces, dashes, spaces on each side of dashes, etc. 
-		if (/[^0-9-\s]+/.test(cardNumber) || cardNumber.length < 15) {
+		if ((/[^0-9-\s]+/.test(cardNumber) || cardNumber.length < 15) && paymentSelect.value === 'credit card') {
 			creditInput.style.backgroundColor = 'red';
 	    	creditInput.style.opacity = '.4';
 			alertArray.push('Please enter a valid card number.');
@@ -309,7 +309,7 @@ function validateForm() {	// this function runs whenever the Submit button is pr
 	//	zip code input accepts US zip codes only. 'murica 
 	var zipValue = document.getElementById('zip').value;
 	var isValidZip = /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zipValue);
-	if (!isValidZip) {
+	if (!isValidZip && paymentSelect.value === 'credit card') {
 			zipInput.style.backgroundColor = 'red';
 	    	zipInput.style.opacity = '.4';
 			alertArray.push('Please enter a valid zip code');
@@ -318,7 +318,7 @@ function validateForm() {	// this function runs whenever the Submit button is pr
 
 
 	// cvv input must be properly filled in - allows 3 digits for most credit cards and 4 digits for AmEx
-	if (document.getElementById('cvv').value.length < 3 || document.getElementById('cvv').value.length > 4) {
+	if ((cvvInput.value.length < 3 || cvvInput.value.length > 4) && paymentSelect.value === 'credit card') {
 			cvvInput.style.backgroundColor = 'red';
 	    	cvvInput.style.opacity = '.4';
 			alertArray.push('Please enter a valid CVV code');
