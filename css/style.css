@@ -125,11 +125,6 @@ select {
 }
 
 
-select::-ms-expand {	  /* hide default grey down arrow in Internet Explorer */
-  display: none;
-}
-
-
 /* ================================= 
   Page Styles
 ==================================== */
