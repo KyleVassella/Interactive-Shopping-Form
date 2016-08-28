@@ -202,8 +202,8 @@ paymentSelect.onchange = function() {	// function to display the information ass
 	}
 	if (paymentSelect.value === 'select_method') {
 		creditDiv.style.display = 'none';
-		paypalDiv.style.display = 'block';
-		bitcoinDiv.style.display = 'block';
+		paypalDiv.style.display = 'none';
+		bitcoinDiv.style.display = 'none';
 	}
 };
 
