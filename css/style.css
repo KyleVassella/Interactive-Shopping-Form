@@ -124,6 +124,13 @@ select {
 	outline: none;
 }
 
+/* Error Labels Styling */
+.error {
+	color: firebrick;
+	font-weight: bold;
+}
+
+
 
 /* ================================= 
   Page Styles

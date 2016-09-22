@@ -1,5 +1,11 @@
+//	IMPROVEMENTS
+//1).  AFTER ERROR, IF NAME LABEL FIELD IS FILLED IN BUT THEN ERASED, RE-SHOW THE RED TEXT AND RED BAR. SAME FOR CHECKBOXES, ETC
+var submitCounter = 0;
+var error = document.getElementsByClassName('error');
+var nameLabel = document.getElementById('nameLabel');
 var nameInput = document.getElementById('name');	// variables to get the 'Name' input, email input, job title input, the hidden 'other' input, the design select menu, respectively
 var emailInput = document.getElementById('mail');
+var emailLabel = document.getElementById('mailLabel');
 var jobSelect = document.getElementById('title');
 var otherInput = document.getElementById('other-input');
 var designSelect = document.getElementById('design');
@@ -14,9 +20,13 @@ var creditDiv = document.getElementById('credit-card');
 var paypalDiv = document.getElementById('paypal');
 var bitcoinDiv = document.getElementById('bitcoin');
 
+var creditLabel = document.getElementById('creditLabel');
 var creditInput = document.getElementById('cc-num');	//	variables to get the credit card number input, the zip code input and the cvv code input, respectively
+var zipLabel = document.getElementById('zipLabel');
 var zipInput = document.getElementById('zip');
+var cvvLabel = document.getElementById('cvvLabel');
 var cvvInput = document.getElementById('cvv');
+
 
 nameInput.focus();	// gives the 'Name' input focus
 
@@ -25,6 +35,11 @@ otherInput.addEventListener("focus", function() {
 	otherInput.style.color = '';
 	otherInput.value = '';
 	});
+
+//
+for (var i=0; i<error.length; i++) {
+	error[i].style.display = 'none';
+}
 
 jobSelect.onchange = function() {	// function to hide and show the 'other' input if someone selects 'other' as job type or deselects it, respectively
 	if (jobSelect.value === 'other') {
@@ -42,14 +57,29 @@ paymentSelect.children[1].setAttribute('selected', 'selected');	// sets 'Credit 
 //	after form submission, these event listeners clear the red highlights from incorrectly filled fields once the user types into them
 nameInput.addEventListener('keyup', function() {
 	nameInput.style = '';
+	error[0].style.display = 'none';
+	nameLabel.style.display = 'block';
+	if (submitCounter > 0 && nameInput.value === '') {
+		nameLabel.style.display = 'none';
+		error[0].style.display = 'block';
+	}
 });
 
 emailInput.addEventListener('keyup', function() {
 	emailInput.style = '';
+	error[1].style.display = 'none';
+	emailLabel.style.display = 'block';
+	if (submitCounter > 0 && emailInput.value === '') {
+		emailLabel.style.display = 'none';
+		error[1].style.display = 'block';
+	}
 });
 
 function activitiesReset() {
-	activitiesLegend.style = '';
+	error[2].style.display = 'none'
+	// if (submitCounter > 0 && checkboxes.checked === null) {
+	// 	error[2].style.display = 'block';
+	// }
 }	
 for (var i=0; i<checkboxes.length; i++) {
 checkboxes[i].addEventListener('change', activitiesReset);
@@ -57,18 +87,25 @@ checkboxes[i].addEventListener('change', activitiesReset);
 
 paymentSelect.addEventListener('change', function() {
 		paymentLabel.style = '';
+		error[2].style.display = 'none';
 });
 
 creditInput.addEventListener('keyup', function() {
 	creditInput.style = '';
+	error[4].style.display = 'none';
+	creditLabel.style.display = 'block';
 });
 
 zipInput.addEventListener('keyup', function() {
 	zipInput.style = '';
+	error[5].style.display = 'none';
+	zipLabel.style.display = 'block';
 });
 
 cvvInput.addEventListener('keyup', function() {
 	cvvInput.style = '';
+	error[6].style.display = 'none';
+	cvvLabel.style.display = 'block';
 });
 
 
@@ -210,10 +247,13 @@ paymentSelect.onchange = function() {	// function to display the information ass
 
 
 function validateForm() {	// this function runs whenever the Submit button is pressed or whenever the user presses the 'enter' key. This function validates the form, ensuring all required fields are properly filled
+	submitCounter++;
 	var alertArray = [];	// an array to hold all alert messages, each of which specifies a condition which was not met when the user filled out the form
 	var counter = 0;	// a counter to signify if user filled out form properly. If counter > 0, the user failed some condition	
 	//	name value must be filled out
 	if (nameInput.value === null || nameInput.value === '') {
+		error[0].style.display = 'block';
+		nameLabel.style.display = 'none';
 		nameInput.style.backgroundColor = 'red';
 		nameInput.style.opacity = '.4';
 		alertArray.push("Please enter a name in the 'Name' field.");
@@ -224,6 +264,8 @@ function validateForm() {	// this function runs whenever the Submit button is pr
 	var email = emailInput.value;	//	email address must be formatted correctly or field is marked red and an error message is added to alert array
 	if (validateEmail(email)) {
 	}	else {
+		emailLabel.style.display = 'none';
+		error[1].style.display = 'block';
 		emailInput.style.backgroundColor = 'red';
 		emailInput.style.opacity = '.4';
 		alertArray.push('Please enter a valid email address.');
@@ -246,7 +288,7 @@ function validateForm() {	// this function runs whenever the Submit button is pr
     }
     if (okay) {
 	} else {
-	activitiesLegend.style.border = '3px solid rgba(255, 0, 0, .5)';
+	activitiesLabel.style.display = 'block';
     alertArray.push('Please choose at least one activity.');
     counter++;
 	}
@@ -265,6 +307,8 @@ function validateForm() {	// this function runs whenever the Submit button is pr
 	function valid_credit_card(cardNumber) {
 	  // accept only digits, dashes or spaces, must be at least 15 characters long. Has no max length specification because user might include spaces, dashes, spaces on each side of dashes, etc. 
 		if ((/[^0-9-\s]+/.test(cardNumber) || cardNumber.length < 15) && paymentSelect.value === 'credit card') {
+			creditLabel.style.display = 'none';
+			error[4].style.display = 'block';
 			creditInput.style.backgroundColor = 'red';
 	    	creditInput.style.opacity = '.4';
 			alertArray.push('Please enter a valid card number.');
@@ -295,6 +339,8 @@ function validateForm() {	// this function runs whenever the Submit button is pr
 	var zipValue = document.getElementById('zip').value;
 	var isValidZip = /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zipValue);
 	if (!isValidZip && paymentSelect.value === 'credit card') {
+			zipLabel.style.display = 'none';
+			error[5].style.display = 'block';
 			zipInput.style.backgroundColor = 'red';
 	    	zipInput.style.opacity = '.4';
 			alertArray.push('Please enter a valid zip code');
@@ -304,6 +350,8 @@ function validateForm() {	// this function runs whenever the Submit button is pr
 
 	// cvv input must be properly filled in - allows 3 digits for most credit cards and 4 digits for AmEx
 	if ((cvvInput.value.length < 3 || cvvInput.value.length > 4) && paymentSelect.value === 'credit card') {
+			cvvLabel.style.display = 'none';
+			error[6].style.display = 'block';
 			cvvInput.style.backgroundColor = 'red';
 	    	cvvInput.style.opacity = '.4';
 			alertArray.push('Please enter a valid CVV code');
