@@ -1,5 +1,6 @@
 //	IMPROVEMENTS
 //1).  AFTER ERROR, IF NAME LABEL FIELD IS FILLED IN BUT THEN ERASED, RE-SHOW THE RED TEXT AND RED BAR. SAME FOR CHECKBOXES, ETC
+//small change here
 var submitCounter = 0;
 var error = document.getElementsByClassName('error');
 var nameLabel = document.getElementById('nameLabel');
