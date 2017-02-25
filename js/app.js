@@ -1,148 +1,179 @@
-//	IMPROVEMENTS
-//1).  AFTER ERROR, IF NAME LABEL FIELD IS FILLED IN BUT THEN ERASED, RE-SHOW THE RED TEXT AND RED BAR. SAME FOR CHECKBOXES, ETC
-//small change here, bigger change here
 var submitCounter = 0;
 var error = document.getElementsByClassName('error');
 var nameLabel = document.getElementById('nameLabel');
-var nameInput = document.getElementById('name');	// variables to get the 'Name' input, email input, job title input, the hidden 'other' input, the design select menu, respectively
+var nameInput = document.getElementById('name'); // variables to get the 'Name' input, email input, job title input, the hidden 'other' input, the design select menu, respectively
 var emailInput = document.getElementById('mail');
 var emailLabel = document.getElementById('mailLabel');
 var jobSelect = document.getElementById('title');
 var otherInput = document.getElementById('other-input');
 var designSelect = document.getElementById('design');
 
-var activitiesLegend = document.getElementById('activitiesLegend'); 	// variables to get the activities legend, the activities fieldset, and activites checkboxes, respectively
+// var activitiesLegend = document.getElementById('activitiesLegend'); 	// variables to get the activities legend, the activities fieldset, and activites checkboxes, respectively
 var activitiesSection = document.querySelector('.activities');
 var checkboxes = document.getElementsByClassName('activityCheckbox');
 
-var paymentLabel = document.getElementById('paymentLabel');	//	variables to get the payment label, payment method select menu, credit card section, paypal instructions and bitcoin instructions, respectively
+var paymentLabel = document.getElementById('paymentLabel'); //	variables to get the payment label, payment method select menu, credit card section, paypal instructions and bitcoin instructions, respectively
 var paymentSelect = document.getElementById('payment');
 var creditDiv = document.getElementById('credit-card');
 var paypalDiv = document.getElementById('paypal');
 var bitcoinDiv = document.getElementById('bitcoin');
 
 var creditLabel = document.getElementById('creditLabel');
-var creditInput = document.getElementById('cc-num');	//	variables to get the credit card number input, the zip code input and the cvv code input, respectively
+var creditInput = document.getElementById('cc-num'); //	variables to get the credit card number input, the zip code input and the cvv code input, respectively
 var zipLabel = document.getElementById('zipLabel');
 var zipInput = document.getElementById('zip');
 var cvvLabel = document.getElementById('cvvLabel');
 var cvvInput = document.getElementById('cvv');
 
 
-nameInput.focus();	// gives the 'Name' input focus
+nameInput.focus(); // gives the 'Name' input focus
 
-otherInput.style.display = 'none';	//	hides the 'other input'
+otherInput.style.display = 'none'; //	hides the 'other input'
 otherInput.addEventListener("focus", function() {
-	otherInput.style.color = '';
-	otherInput.value = '';
-	});
+    otherInput.style.color = '';
+    otherInput.value = '';
+});
 
-//
-for (var i=0; i<error.length; i++) {
-	error[i].style.display = 'none';
+for (var i = 0; i < error.length; i++) {
+    error[i].style.display = 'none';
 }
 
-jobSelect.onchange = function() {	// function to hide and show the 'other' input if someone selects 'other' as job type or deselects it, respectively
-	if (jobSelect.value === 'other') {
-		otherInput.style.display = 'block';
-		otherInput.style.color = 'rgba(0, 0, 0, .5)';
-	} else {
-		otherInput.style.display = 'none';
-	}
+jobSelect.onchange = function() { // function to hide and show the 'other' input if someone selects 'other' as job type or deselects it, respectively
+    if (jobSelect.value === 'other') {
+        otherInput.style.display = 'block';
+        otherInput.style.color = 'rgba(0, 0, 0, .5)';
+    } else {
+        otherInput.style.display = 'none';
+    }
 };
 
-paymentSelect.children[1].setAttribute('selected', 'selected');	// sets 'Credit Card' as default payment method
+paymentSelect.children[1].setAttribute('selected', 'selected'); // sets 'Credit Card' as default payment method
 
 
 
 //	after form submission, these event listeners clear the red highlights from incorrectly filled fields once the user types into them
 nameInput.addEventListener('keyup', function() {
-	nameInput.style = '';
-	error[0].style.display = 'none';
-	nameLabel.style.display = 'block';
-	if (submitCounter > 0 && nameInput.value === '') {
-		nameLabel.style.display = 'none';
-		error[0].style.display = 'block';
-	}
+    nameInput.style = '';
+    error[0].style.display = 'none';
+    nameLabel.style.display = 'block';
+    if (submitCounter > 0 && nameInput.value === '') {
+        nameLabel.style.display = 'none';
+        error[0].style.display = 'block';
+        nameInput.style.backgroundColor = 'red';
+        nameInput.style.opacity = '.4';
+    }
 });
 
 emailInput.addEventListener('keyup', function() {
-	emailInput.style = '';
-	error[1].style.display = 'none';
-	emailLabel.style.display = 'block';
-	if (submitCounter > 0 && emailInput.value === '') {
-		emailLabel.style.display = 'none';
-		error[1].style.display = 'block';
-	}
+    emailInput.style = '';
+    error[1].style.display = 'none';
+    emailLabel.style.display = 'block';
+    if (submitCounter > 0 && emailInput.value === '') {
+        emailLabel.style.display = 'none';
+        error[1].style.display = 'block';
+        emailInput.style.backgroundColor = 'red';
+        emailInput.style.opacity = '.4';
+    }
 });
 
+
 function activitiesReset() {
-	error[2].style.display = 'none'
-	// if (submitCounter > 0 && checkboxes.checked === null) {
-	// 	error[2].style.display = 'block';
-	// }
-}	
-for (var i=0; i<checkboxes.length; i++) {
-checkboxes[i].addEventListener('change', activitiesReset);
+    var checkboxesChecked = function() {
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                return true;
+            }
+        }
+        return false;
+    }
+    error[2].style.display = 'none';
+    if (submitCounter > 0 && checkboxesChecked() === false) { //optimize this by moving submitCounter to the for loop below so this doesn't run on each checkbox change before the form has been submitted?
+        error[2].style.display = 'block';
+    }
+}
+
+
+for (var i = 0; i < checkboxes.length; i++) {
+    checkboxes[i].addEventListener('change', activitiesReset);
 }
 
 paymentSelect.addEventListener('change', function() {
-		paymentLabel.style = '';
-		error[2].style.display = 'none';
+    paymentLabel.style = '';
+    error[2].style.display = 'none';
 });
 
 creditInput.addEventListener('keyup', function() {
-	creditInput.style = '';
-	error[4].style.display = 'none';
-	creditLabel.style.display = 'block';
+    creditInput.style = '';
+    error[4].style.display = 'none';
+    creditLabel.style.display = 'block';
+    if (submitCounter > 0 && creditInput.value === '') {
+        creditLabel.style.display = 'none';
+        error[4].style.display = 'block';
+        creditInput.style.backgroundColor = 'red';
+        creditInput.style.opacity = '.4';
+    }
 });
 
 zipInput.addEventListener('keyup', function() {
-	zipInput.style = '';
-	error[5].style.display = 'none';
-	zipLabel.style.display = 'block';
+    zipInput.style = '';
+    error[5].style.display = 'none';
+    zipLabel.style.display = 'block';
+    if (submitCounter > 0 && zipInput.value === '') {
+        zipLabel.style.display = 'none';
+        error[5].style.display = 'block';
+        zipInput.style.backgroundColor = 'red';
+        zipInput.style.opacity = '.4';
+    }
 });
 
 cvvInput.addEventListener('keyup', function() {
-	cvvInput.style = '';
-	error[6].style.display = 'none';
-	cvvLabel.style.display = 'block';
+    cvvInput.style = '';
+    error[6].style.display = 'none';
+    cvvLabel.style.display = 'block';
+    if (submitCounter > 0 && cvvInput.value === '') {
+        cvvLabel.style.display = 'none';
+        error[6].style.display = 'block';
+        cvvInput.style.backgroundColor = 'red';
+        cvvInput.style.opacity = '.4';
+    }
 });
 
 
 
-var colorDiv = document.getElementById('colorDiv');	// gets the color div
-colorDiv.style.display = 'none';	//	hides the color div
+var colorDiv = document.getElementById('colorDiv'); // gets the color div
+colorDiv.style.display = 'none'; //	hides the color div
 
-designSelect.onchange = function() {	//	function to display only shirt colors which are associated with the selected design, and hide the others
-	var colorSelect = document.getElementById('color');
-	var punsColors = document.getElementsByClassName('js_puns');	//	gets the colors associateed w/ the 'JS Puns' shirt style
-	var heartColors = document.getElementsByClassName('heart_js');	//	gets the colors associated w/ the 'I <3 JS' shirt style
-	var i;	//	'i' variable to serve as index counters in my for loop. Defined here to avoid repeating 'var i = 0' variable declarations in each for loop
-	for (i=0; i<colorSelect.children.length; i++){		// for loop which resets all shirt color visibility and default selected status, respectively
-		colorSelect.children[i].style.display = 'block';
-		colorSelect.children[i].removeAttribute('selected');
-	}
+designSelect.onchange = function() { //	function to display only shirt colors which are associated with the selected design, and hide the others
+    var colorSelect = document.getElementById('color');
+    var punsColors = document.getElementsByClassName('js_puns'); //	gets the colors associateed w/ the 'JS Puns' shirt style
+    var heartColors = document.getElementsByClassName('heart_js'); //	gets the colors associated w/ the 'I <3 JS' shirt style
+    var i; //	'i' variable to serve as index counters in my for loop. Defined here to avoid repeating 'var i = 0' variable declarations in each for loop
+    for (i = 0; i < colorSelect.children.length; i++) { // for loop which resets all shirt color visibility and default selected status, respectively
+        colorSelect.children[i].style.display = 'block';
+        colorSelect.children[i].removeAttribute('selected');
+    }
 
-	if (designSelect.value==='js puns') {		//	function which sets the first listed 'JS Puns' shirt color as the default selected option and hides the display of 'I <3 JS' shirt colors, respectively
-		colorDiv.style.display = 'inline';	// shows the color div if 'JS - Puns' design is chosen
-		colorSelect.children[0].setAttribute('selected', 'selected');
-		for(i=0; i<punsColors.length; i++){
-			heartColors[i].style.display='none';} 
-	}
-	if (designSelect.value==='heart js') {	//	function which sets first 'I <3 JS' shirt color as default selected option and hides the display of 'JS Puns' shirt colors, respectively
-		colorDiv.style.display = 'inline';	//	/ shows the color div if 'I <3 JS' design is chosen
-		colorSelect.children[3].setAttribute('selected', 'selected');
-		for(i=0; i<heartColors.length; i++) {
-		punsColors[i].style.display = 'none';}
-	}
-	if (designSelect.value==='select theme') {	//	function which sets first listed shirt color as default selected option and shows all shirt color options for all designs, respectively
-		colorDiv.style.display = 'none';	//	re-hides the color div if 'Select Theme' is chosen
-		colorSelect.children[0].setAttribute('selected', 'selected');
-		for (i=0; i<colorSelect.children.length; i++) {
-		colorSelect.children[i].style.display = 'block';
-		}
-	}
+    if (designSelect.value === 'js puns') { //	function which sets the first listed 'JS Puns' shirt color as the default selected option and hides the display of 'I <3 JS' shirt colors, respectively
+        colorDiv.style.display = 'inline'; // shows the color div if 'JS - Puns' design is chosen
+        colorSelect.children[0].setAttribute('selected', 'selected');
+        for (i = 0; i < punsColors.length; i++) {
+            heartColors[i].style.display = 'none';
+        }
+    }
+    if (designSelect.value === 'heart js') { //	function which sets first 'I <3 JS' shirt color as default selected option and hides the display of 'JS Puns' shirt colors, respectively
+        colorDiv.style.display = 'inline'; //	/ shows the color div if 'I <3 JS' design is chosen
+        colorSelect.children[3].setAttribute('selected', 'selected');
+        for (i = 0; i < heartColors.length; i++) {
+            punsColors[i].style.display = 'none';
+        }
+    }
+    if (designSelect.value === 'select theme') { //	function which sets first listed shirt color as default selected option and shows all shirt color options for all designs, respectively
+        colorDiv.style.display = 'none'; //	re-hides the color div if 'Select Theme' is chosen
+        colorSelect.children[0].setAttribute('selected', 'selected');
+        for (i = 0; i < colorSelect.children.length; i++) {
+            colorSelect.children[i].style.display = 'block';
+        }
+    }
 
 };
 
@@ -150,220 +181,221 @@ designSelect.onchange = function() {	//	function to display only shirt colors wh
 
 //	functions to disable conflicting activity times, and re-enable them if the checkbox is deselected
 function checkFrameworks() {
-	if (checkboxes[1].checked) {
-		checkboxes[3].disabled = true;
-		checkboxes[3].parentNode.style.color = 'grey';
-		checkboxes[3].parentElement.disabled = true;
-	} else {
-		checkboxes[3].disabled = false;
-		checkboxes[3].parentNode.style = '';
-	}
+    if (checkboxes[1].checked) {
+        checkboxes[3].disabled = true;
+        checkboxes[3].parentNode.style.color = 'grey';
+        checkboxes[3].parentElement.disabled = true;
+    } else {
+        checkboxes[3].disabled = false;
+        checkboxes[3].parentNode.style = '';
+    }
 }
 
 function checkExpress() {
-	if (checkboxes[3].checked) {
-		checkboxes[1].disabled = true;
-		checkboxes[1].parentNode.style.color = 'grey';
-	} else {
-		checkboxes[1].disabled = false;
-		checkboxes[1].parentNode.style = '';
-	}
+    if (checkboxes[3].checked) {
+        checkboxes[1].disabled = true;
+        checkboxes[1].parentNode.style.color = 'grey';
+    } else {
+        checkboxes[1].disabled = false;
+        checkboxes[1].parentNode.style = '';
+    }
 }
 
 function checkLibraries() {
-	if (checkboxes[2].checked) {
-		checkboxes[4].disabled = true;
-		checkboxes[4].parentNode.style.color = 'grey';
-	} else {
-		checkboxes[4].disabled = false;
-		checkboxes[4].parentNode.style = '';
-	}
+    if (checkboxes[2].checked) {
+        checkboxes[4].disabled = true;
+        checkboxes[4].parentNode.style.color = 'grey';
+    } else {
+        checkboxes[4].disabled = false;
+        checkboxes[4].parentNode.style = '';
+    }
 }
 
 function checkNode() {
-	if (checkboxes[4].checked) {
-		checkboxes[2].disabled = true;
-		checkboxes[2].parentNode.style.color = 'grey';
-	}	else {
-		checkboxes[2].disabled = false;
-		checkboxes[2].parentNode.style = '';
-	}
+    if (checkboxes[4].checked) {
+        checkboxes[2].disabled = true;
+        checkboxes[2].parentNode.style.color = 'grey';
+    } else {
+        checkboxes[2].disabled = false;
+        checkboxes[2].parentNode.style = '';
+    }
 }
 
 function checkboxConflicts() {
-	checkFrameworks();
-		checkExpress();
-		checkLibraries();
-		checkNode();
+    checkFrameworks();
+    checkExpress();
+    checkLibraries();
+    checkNode();
 }
 
-for (var i=0; i<checkboxes.length; i++) {	//	for loop to apply click event to each checkbox and add the four conflicting schedule event handlers to each
-checkboxes[i].addEventListener("click", checkboxConflicts);
+for (var i = 0; i < checkboxes.length; i++) { //	for loop to apply click event to each checkbox and add the four conflicting schedule event handlers to each
+    checkboxes[i].addEventListener("click", checkboxConflicts);
 }
 
 
 
 var totalLabel = document.createElement('label'); //create a total label
-var cost;	// cost variable to hold the everchanging price of chosen events
-function activitiesTotalAdd() {	//	function to add the $ value of each activity as it's checked
-	cost = parseInt('0');	//	reset the total cost after each checkbox has been checked or unchecked to allow for a clean re-count
-	for (var i=0; i<checkboxes.length; i++) {
-		if (checkboxes[i].checked) {
-			cost += parseInt(checkboxes[i].value);	
-	}
-	activitiesSection.appendChild(totalLabel);
-	totalLabel.innerHTML = '<label>Total: $' + cost + ' </label>';	//	dynamically appends the total cost label
-	}
-}
-	
-for (var i=0; i<checkboxes.length; i++) {	//	dynamically calculates the total cost as you check and uncheck activities checkboxes
-	checkboxes[i].onchange = activitiesTotalAdd;
+var cost; // cost variable to hold the everchanging price of chosen events
+function activitiesTotalAdd() { //	function to add the $ value of each activity as it's checked
+    cost = parseInt('0'); //	reset the total cost after each checkbox has been checked or unchecked to allow for a clean re-count
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            cost += parseInt(checkboxes[i].value);
+        }
+        activitiesSection.appendChild(totalLabel);
+        totalLabel.innerHTML = '<label>Total: $' + cost + ' </label>'; //	dynamically appends the total cost label
+    }
 }
 
+for (var i = 0; i < checkboxes.length; i++) { //	dynamically calculates the total cost as you check and uncheck activities checkboxes
+    checkboxes[i].onchange = activitiesTotalAdd;
+}
 
 
-paymentSelect.onchange = function() {	// function to display the information associated with the selected payment method, and hide the others
-	if (paymentSelect.value === 'credit card') {
-		creditDiv.style.display = 'block';
-		paypalDiv.style.display = 'none';
-		bitcoinDiv.style.display = 'none';
-	}
-	if (paymentSelect.value === 'paypal') {
-		paypalDiv.style.display = 'block';
-		creditDiv.style.display = 'none';
-		bitcoinDiv.style.display = 'none';
-	}
-	if (paymentSelect.value === 'bitcoin') {
-		bitcoinDiv.style.display = 'block';
-		creditDiv.style.display = 'none';
-		paypalDiv.style.display = 'none';
-	}
-	if (paymentSelect.value === 'select_method') {
-		creditDiv.style.display = 'none';
-		paypalDiv.style.display = 'none';
-		bitcoinDiv.style.display = 'none';
-	}
+
+paymentSelect.onchange = function() { // function to display the information associated with the selected payment method, and hide the others
+    if (paymentSelect.value === 'credit card') {
+        creditDiv.style.display = 'block';
+        paypalDiv.style.display = 'none';
+        bitcoinDiv.style.display = 'none';
+    }
+    if (paymentSelect.value === 'paypal') {
+        paypalDiv.style.display = 'block';
+        creditDiv.style.display = 'none';
+        bitcoinDiv.style.display = 'none';
+    }
+    if (paymentSelect.value === 'bitcoin') {
+        bitcoinDiv.style.display = 'block';
+        creditDiv.style.display = 'none';
+        paypalDiv.style.display = 'none';
+    }
+    if (paymentSelect.value === 'select_method') {
+        creditDiv.style.display = 'none';
+        paypalDiv.style.display = 'none';
+        bitcoinDiv.style.display = 'none';
+    }
 };
 
 
 
-function validateForm() {	// this function runs whenever the Submit button is pressed or whenever the user presses the 'enter' key. This function validates the form, ensuring all required fields are properly filled
-	submitCounter++;
-	var alertArray = [];	// an array to hold all alert messages, each of which specifies a condition which was not met when the user filled out the form
-	var counter = 0;	// a counter to signify if user filled out form properly. If counter > 0, the user failed some condition	
-	//	name value must be filled out
-	if (nameInput.value === null || nameInput.value === '') {
-		error[0].style.display = 'block';
-		nameLabel.style.display = 'none';
-		nameInput.style.backgroundColor = 'red';
-		nameInput.style.opacity = '.4';
-		alertArray.push("Please enter a name in the 'Name' field.");
-		counter ++;
-	}
+function validateForm() { // this function runs whenever the Submit button is pressed or whenever the user presses the 'enter' key. This function validates the form, ensuring all required fields are properly filled
+    submitCounter++;
+    var alertArray = []; // an array to hold all alert messages, each of which specifies a condition which was not met when the user filled out the form
+    var counter = 0; // a counter to signify if user filled out form properly. If counter > 0, the user failed some condition	
+    //	name value must be filled out
+    if (nameInput.value === null || nameInput.value === '') {
+        error[0].style.display = 'block';
+        nameLabel.style.display = 'none';
+        nameInput.style.backgroundColor = 'red';
+        nameInput.style.opacity = '.4';
+        alertArray.push("Please enter a name in the 'Name' field.");
+        counter++;
+    }
 
 
-	var email = emailInput.value;	//	email address must be formatted correctly or field is marked red and an error message is added to alert array
-	if (validateEmail(email)) {
-	}	else {
-		emailLabel.style.display = 'none';
-		error[1].style.display = 'block';
-		emailInput.style.backgroundColor = 'red';
-		emailInput.style.opacity = '.4';
-		alertArray.push('Please enter a valid email address.');
-		counter++;
-	}
+    var email = emailInput.value; //	email address must be formatted correctly or field is marked red and an error message is added to alert array
+    if (validateEmail(email)) {} else {
+        emailLabel.style.display = 'none';
+        error[1].style.display = 'block';
+        emailInput.style.backgroundColor = 'red';
+        emailInput.style.opacity = '.4';
+        alertArray.push('Please enter a valid email address.');
+        counter++;
+    }
 
-	function validateEmail(email) {
-	    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-	    return re.test(email);
-	}
+    function validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
 
 
-	//	at least one event checkbox must be checked or field is marked red and an error message is added to alert array
-    var okay=false;
-    for (var i=0; i<checkboxes.length; i++) {
+    //	at least one event checkbox must be checked or field is marked red and an error message is added to alert array
+    var okay = false;
+    for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
-            okay=true;
+            okay = true;
             break;
         }
     }
-    if (okay) {
-	} else {
-	activitiesLabel.style.display = 'block';
-    alertArray.push('Please choose at least one activity.');
-    counter++;
-	}
+    if (okay) {} else {
+        activitiesLabel.style.display = 'block'; // how is this having any effect on this program? This activitiesLabel is never defined - bizarre.
+        alertArray.push('Please choose at least one activity.');
+        counter++;
+    }
 
 
-	//	a payment method must be selected or label is marked red and an error message is added to alert array
-	if (paymentSelect.value === 'select_method') {
-	paymentLabel.style.border = '3px solid rgba(255, 0, 0, .5)';
-	alertArray.push('Please select a payment method.');
-	counter++;
-	}
+    //	a payment method must be selected or label is marked red and an error message is added to alert array
+    if (paymentSelect.value === 'select_method') {
+        paymentLabel.style.border = '3px solid rgba(255, 0, 0, .5)';
+        alertArray.push('Please select a payment method.');
+        counter++;
+    }
 
 
-	//	credit card validation function borrowed from https://gist.github.com/DiegoSalazar/4075533
-	var cardNumber = document.getElementById('cc-num').value;
-	function valid_credit_card(cardNumber) {
-	  // accept only digits, dashes or spaces, must be at least 15 characters long. Has no max length specification because user might include spaces, dashes, spaces on each side of dashes, etc. 
-		if ((/[^0-9-\s]+/.test(cardNumber) || cardNumber.length < 15) && paymentSelect.value === 'credit card') {
-			creditLabel.style.display = 'none';
-			error[4].style.display = 'block';
-			creditInput.style.backgroundColor = 'red';
-	    	creditInput.style.opacity = '.4';
-			alertArray.push('Please enter a valid card number.');
-			counter++;
-		}
-		// The Luhn Algorithm
-		var nCheck = 0, nDigit = 0, bEven = false;
-		cardNumber = cardNumber.replace(/\D/g, "");
+    //	credit card validation function borrowed from https://gist.github.com/DiegoSalazar/4075533
+    var cardNumber = document.getElementById('cc-num').value;
 
-		for (var n = cardNumber.length - 1; n >= 0; n--) {
-			var cDigit = cardNumber.charAt(n),
-				  nDigit = parseInt(cDigit, 10);
+    function valid_credit_card(cardNumber) {
+        // accept only digits, dashes or spaces, must be at least 15 characters long. Has no max length specification because user might include spaces, dashes, spaces on each side of dashes, etc. 
+        if ((/[^0-9-\s]+/.test(cardNumber) || cardNumber.length < 15) && paymentSelect.value === 'credit card') {
+            creditLabel.style.display = 'none';
+            error[4].style.display = 'block';
+            creditInput.style.backgroundColor = 'red';
+            creditInput.style.opacity = '.4';
+            alertArray.push('Please enter a valid card number.');
+            counter++;
+        }
+        // The Luhn Algorithm
+        var nCheck = 0,
+            nDigit = 0,
+            bEven = false;
+        cardNumber = cardNumber.replace(/\D/g, "");
 
-			if (bEven) {
-				if ((nDigit *= 2) > 9) nDigit -= 9;
-			}
+        for (var n = cardNumber.length - 1; n >= 0; n--) {
+            var cDigit = cardNumber.charAt(n),
+                nDigit = parseInt(cDigit, 10);
 
-			nCheck += nDigit;
-			bEven = !bEven;
-		}
+            if (bEven) {
+                if ((nDigit *= 2) > 9) nDigit -= 9;
+            }
 
-		return (nCheck % 10) == 0;
-	}
-	valid_credit_card(cardNumber);	//	calls the valid_credit_card function and gives the cardNumber argument
+            nCheck += nDigit;
+            bEven = !bEven;
+        }
 
-
-	//	zip code input accepts US zip codes only. 'murica 
-	var zipValue = document.getElementById('zip').value;
-	var isValidZip = /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zipValue);
-	if (!isValidZip && paymentSelect.value === 'credit card') {
-			zipLabel.style.display = 'none';
-			error[5].style.display = 'block';
-			zipInput.style.backgroundColor = 'red';
-	    	zipInput.style.opacity = '.4';
-			alertArray.push('Please enter a valid zip code');
-			counter++;
-		}
+        return (nCheck % 10) == 0;
+    }
+    valid_credit_card(cardNumber); //	calls the valid_credit_card function and gives the cardNumber argument
 
 
-	// cvv input must be properly filled in - allows 3 digits for most credit cards and 4 digits for AmEx
-	if ((cvvInput.value.length < 3 || cvvInput.value.length > 4) && paymentSelect.value === 'credit card') {
-			cvvLabel.style.display = 'none';
-			error[6].style.display = 'block';
-			cvvInput.style.backgroundColor = 'red';
-	    	cvvInput.style.opacity = '.4';
-			alertArray.push('Please enter a valid CVV code');
-			counter++;
-		}	
+    //	zip code input accepts US zip codes only. 'murica 
+    var zipValue = document.getElementById('zip').value;
+    var isValidZip = /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zipValue);
+    if (!isValidZip && paymentSelect.value === 'credit card') {
+        zipLabel.style.display = 'none';
+        error[5].style.display = 'block';
+        zipInput.style.backgroundColor = 'red';
+        zipInput.style.opacity = '.4';
+        alertArray.push('Please enter a valid zip code');
+        counter++;
+    }
 
 
-	//	if any of the form conditions specified in the validateForm() function have not been met, display an alert listing each condition which was not met and do not submit the form 
-	if (counter > 0) {
-		alert(alertArray.join('\n'));
-		alertArray = [];	//	clears the alertArray once more so that the next alert message will have a clean slate
-		return false;	// form is not submitted if counter > 0
-	}
+    // cvv input must be properly filled in - allows 3 digits for most credit cards and 4 digits for AmEx
+    if ((cvvInput.value.length < 3 || cvvInput.value.length > 4) && paymentSelect.value === 'credit card') {
+        cvvLabel.style.display = 'none';
+        error[6].style.display = 'block';
+        cvvInput.style.backgroundColor = 'red';
+        cvvInput.style.opacity = '.4';
+        alertArray.push('Please enter a valid CVV code');
+        counter++;
+    }
+
+
+    //	if any of the form conditions specified in the validateForm() function have not been met, display an alert listing each condition which was not met and do not submit the form 
+    if (counter > 0) {
+        alert(alertArray.join('\n'));
+        alertArray = []; //	clears the alertArray once more so that the next alert message will have a clean slate
+        return false; // form is not submitted if counter > 0
+    }
 }
